@@ -28,6 +28,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authenticated();
 
         httpSecurity.formLogin();
+        httpSecurity.httpBasic();
     }
 
     @Override
