@@ -8,6 +8,13 @@ import javax.persistence.*;
 @Entity
 public class Authority implements GrantedAuthority {
 
+    public Authority(String roleCode, String roleDescription) {
+        this.roleCode = roleCode;
+        this.roleDescription = roleDescription;
+    }
+
+    public Authority() {}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

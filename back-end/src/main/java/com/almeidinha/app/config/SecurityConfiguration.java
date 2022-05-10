@@ -1,5 +1,6 @@
 package com.almeidinha.app.config;
 
+import com.almeidinha.app.services.CustomUserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +15,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    private final CustomUserService customUserService;
+
+    public SecurityConfiguration(CustomUserService customUserService) {
+        this.customUserService = customUserService;
+    }
+
     @Override
     protected AuthenticationManager authenticationManager() throws Exception {
         return super.authenticationManager();
@@ -23,20 +30,37 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         // httpSecurity.authorizeRequests().anyRequest().permitAll();
         httpSecurity
-                .authorizeRequests()
-                .anyRequest()
-                .authenticated();
+                .authorizeRequests((request) -> request
+                        .antMatchers("/h2-console/**")
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated())
+                .httpBasic();
 
         httpSecurity.formLogin();
-        httpSecurity.httpBasic();
+
+        // h2-console
+        httpSecurity
+                .csrf()
+                .disable()
+                .headers()
+                .frameOptions()
+                .disable();
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder builder) throws Exception {
-        builder.inMemoryAuthentication()
+        // in-memory auth
+        builder
+                .inMemoryAuthentication()
                 .withUser("almeida")
-                .password(passwordEncoder().encode("password"))
+                .password(this.passwordEncoder().encode("password"))
                 .authorities("USER", "ADMIN");
+
+        // Database Auth
+        builder
+                .userDetailsService(this.customUserService)
+                .passwordEncoder(this.passwordEncoder());
     }
 
     @Bean

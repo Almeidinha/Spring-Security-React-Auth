@@ -13,6 +13,15 @@ import java.util.List;
 @Entity
 public class User implements UserDetails {
 
+    public User(String userName, String firstName, String lastName) {
+        this.userName = userName;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    public User() {
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -45,7 +54,7 @@ public class User implements UserDetails {
     private boolean enabled;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "AUTH_AUTHORITY",
+    @JoinTable(name = "AUTH_USER_AUTHORITY",
             joinColumns = @JoinColumn(referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(referencedColumnName = "id")
     )
