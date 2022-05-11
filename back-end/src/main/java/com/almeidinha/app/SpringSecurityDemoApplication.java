@@ -33,7 +33,7 @@ public class SpringSecurityDemoApplication {
 		authorityList.add(new Authority("USER", "User role"));
 		authorityList.add(new Authority("ADMIN", "Admin role"));
 
-		User user = new User("mike", "marcos", "almeida");
+		User user = new User("marcos.almeida", "marcos", "almeida");
 		user.setAuthorities(authorityList);
 		user.setPassword(this.passwordEncoder.encode("password"));
 		user.setEnabled(true);
